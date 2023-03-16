@@ -1,7 +1,7 @@
 <script setup>
 import PopUpEditForm from './PopUpEditForm.vue';
 
-defineProps({
+let putEvent = defineProps({
   available: {
     type: Boolean,
     default: null,
@@ -23,11 +23,11 @@ defineProps({
     default: null,
   },
   max_users: {
-    type: String,
+    type: Number,
     default: null,
   },
   signed_users: {
-    type: String,
+    type: Number,
     default: null,
   },
   title: {
@@ -55,6 +55,25 @@ async function deleteEvent(id) {
         location.reload();
     }
 
+
+
+
+async function submitForm(id){
+ 
+  const response = await fetch(`http://localhost:8080/api/events/${id}`, {
+    method: 'PUT',
+    headers:{
+      'Content-Type': 'aplication/json',
+    },
+    body: JSON.stringify(putEvent),
+  })
+  if(response.ok){
+    alert("La solicitud fue exitosa")
+  }else{
+    alert("hubo un error")
+  }
+  location.reload();
+}
 </script>
 <template>
   <div class="card mb" id="mainContainer">
@@ -93,7 +112,6 @@ async function deleteEvent(id) {
     id="btnEdit"
     data-bs-toggle="modal"
     data-bs-target="#editForm"
-   
   >
     Edit
   </button>
@@ -119,15 +137,15 @@ async function deleteEvent(id) {
           ></button>
         </div>
         <div class="modal-body" id="formBody">
-          <form class="row g-3">
+          <form class="row g-3" @submit.prevent="submitForm">
             <div class="col-md-12">
-              <label for="inputTitle" class="form-label"> {{title}} </label>
-              <input type="text" class="form-control" id="inputTitle"/>
+              <label for="inputTitle" class="form-label"> Titulo </label>
+              <input type="text" class="form-control" id="inputTitle" v-model="putEvent.title" />
             </div>
 
             <div class="col-12">
               <label for="inputDate" class="form-label">Date</label>
-              <input type="date" class="form-control" id="inputDate" />
+              <input type="text" class="form-control" id="inputDate" v-model="putEvent.date"/>
             </div>
             <div class="col-12">
               <label for="inputEntryMax" class="form-label">Max Entry</label>
@@ -137,21 +155,22 @@ async function deleteEvent(id) {
                 id="inputEntryMax"
                 min="0"
                 max="30"
+                v-model="putEvent.max_users"
               />
             </div>
             <div class="col-md-12">
               <label for="inputDescription" class="form-label"
                 >Description</label
               >
-              <input type="text" class="form-control" id="inputDescription" />
+              <input type="text" class="form-control" id="inputDescription" v-model="putEvent.description"/>
             </div>
             <div class="col-md-12">
               <label for="inputImage" class="form-label">Image</label>
-              <input type="image" class="form-control" id="inputImage" />
+              <input type="text" class="form-control" id="inputImage" v-model="putEvent.image"/>
             </div>
 
             <div class="col-12 d-flex justify-content-center">
-              <button type="button" class="btn btn-success" id="ADDbutton">
+              <button type="submit" class="btn btn-success" id="ADDbutton">
                 UPDATE
               </button>
             </div>
